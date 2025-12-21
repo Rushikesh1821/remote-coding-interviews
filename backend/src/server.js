@@ -2,13 +2,14 @@ import express from "express";
 import dotenv from "dotenv";
 import path from "path";
 import { ENV } from "./lib/env.js";
+import { connectDB } from "./lib/db.js"; 
 
 dotenv.config();
 
 const app = express();
 const __dirname = path.resolve();
 
-const PORT = ENV.PORT || process.env.PORT || 10000;
+const PORT = process.env.PORT || ENV.PORT || 10000;
 
 app.use(express.json());
 
@@ -27,6 +28,18 @@ if (ENV.NODE_ENV === "production") {
   });
 }
 
-app.listen(PORT, () => {
-  console.log("server running on", PORT);
-});
+const startServer = async () => {
+  try {
+    await connectDB();
+
+    app.listen(PORT, () => {
+      console.log("🚀 Server is running on port:", PORT);
+    });
+
+  } catch (error) {
+    console.error("💥 Error starting the server:", error);
+    process.exit(1);
+  }
+};
+
+startServer();
