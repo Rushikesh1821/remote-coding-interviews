@@ -1,21 +1,19 @@
 {
   "name": "talent-iq",
   "version": "1.0.0",
-  "main": "index.js",
+  "type": "module",
   "scripts": {
-    "build": "node vercel-build.js",
-    "start": "cd backend && npm start",
-    "dev": "concurrently \"cd frontend && npm run dev\" \"cd backend && npm run dev\"",
-    "install": "echo 'Installing dependencies...'"
+    "build": "npm install --prefix backend && npm install --prefix frontend && npm run build --prefix frontend",
+    "start": "npm run start --prefix backend"
   },
   "engines": {
-    "node": ">=16.0.0"
-  },
-  "dependencies": {
-    "concurrently": "^8.2.0"
+    "node": "18.x"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "@clerk/clerk-react": "^5.59.2"
+  }
 }
