@@ -9,19 +9,14 @@
         "installCommand": "cd frontend && npm install",
         "buildCommand": "cd frontend && npm run build"
       }
-    },
-    {
-      "src": "backend/server.js",
-      "use": "@vercel/node"
     }
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "/backend/server.js"
+      "handle": "filesystem"
     },
     {
-      "src": "/(.*)",
+      "src": "/.*",
       "dest": "/frontend/dist/index.html"
     }
   ]
