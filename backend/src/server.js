@@ -11,6 +11,7 @@ import { inngest, functions } from "./lib/inngest.js";
 import { protectRoute } from "./middlewear/protectRoute.js";
 
 import chatRoutes from "./routes/chatRoute.js";
+import sessionRoutes from "./routes/sessionRoute.js";
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ app.use(clerkMiddleware()); // this adds auth field to request object: req.auth(
 
 app.use("/api/inngest", serve({ client: inngest, functions }));
 app.use("/api/chat", chatRoutes);
+app.use("/api/sessions", sessionRoutes);
 
 
 const PORT = process.env.PORT || ENV.PORT || 10000;
