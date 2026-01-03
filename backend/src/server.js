@@ -106,12 +106,32 @@ app.get("/api/db-status", async (req, res) => {
 if (ENV.NODE_ENV === "production") {
   // Path from backend/src/server.js -> frontend/dist is ../../frontend/dist
   const frontendDist = path.join(__dirname, "../../frontend/dist");
+  const indexPath = path.join(frontendDist, "index.html");
+  
+  console.log("📂 __dirname:", __dirname);
+  console.log("📂 frontendDist path:", frontendDist);
+  console.log("📂 index.html path:", indexPath);
+  
+  // Check if frontend build exists
+  import("fs").then((fs) => {
+    if (fs.existsSync(frontendDist)) {
+      console.log("✅ frontend/dist EXISTS");
+      console.log("📄 Contents:", fs.readdirSync(frontendDist));
+    } else {
+      console.error("❌ frontend/dist NOT FOUND at:", frontendDist);
+    }
+  });
   
   app.use(express.static(frontendDist));
 
   // Fallback: serve index.html for any non-API route (SPA routing)
   app.get("*", (req, res) => {
-    res.sendFile(path.join(frontendDist, "index.html"));
+    res.sendFile(indexPath, (err) => {
+      if (err) {
+        console.error("❌ Failed to send index.html:", err.message);
+        res.status(500).send("Frontend not found. Check build.");
+      }
+    });
   });
 }
 
