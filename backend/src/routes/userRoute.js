@@ -95,5 +95,19 @@ router.patch("/role", protectRoute, async (req, res) => {
   }
 });
 
+// Get user role
+router.get("/role", protectRoute, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select("role");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.status(200).json({ role: user.role });
+  } catch (error) {
+    console.error("Error in getRole:", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
 export default router;
 
