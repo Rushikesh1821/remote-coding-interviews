@@ -14,6 +14,7 @@ import OutputPanel from "../components/OutputPanel";
 import useStreamClient from "../hooks/useStreamClient";
 import { useSocket } from "../hooks/useSocket";
 import { useCodeSyncSocket } from "../hooks/useCodeSyncSocket";
+import { useUserRole } from "../hooks/useUserRole";
 import { StreamCall, StreamVideo } from "@stream-io/video-react-sdk";
 import VideoCallUI from "../components/VideoCallUI";
 
@@ -21,6 +22,7 @@ function SessionPage() {
   const navigate = useNavigate();
   const { id } = useParams();
   const { user } = useUser();
+  const { role, roleQuery } = useUserRole();
   const [output, setOutput] = useState(null);
   const [isRunning, setIsRunning] = useState(false);
 
@@ -134,14 +136,18 @@ function SessionPage() {
   }, [isHost, isParticipant, socket, isCodeSyncConnected, session?.sessionId, id, syncedCode, syncedLanguage]);
 
   // auto-join session if user is not already a participant and not the host
+  // Only auto-join for users with participant role
   useEffect(() => {
     if (!session || !user || loadingSession) return;
+    // Wait for role to be loaded and ensure the user is a participant
+    if (roleQuery && roleQuery.isLoading) return;
+    if (role !== "participant") return;
     if (isHost || isParticipant) return;
 
     joinSessionMutation.mutate(id, { onSuccess: refetch });
 
     // remove the joinSessionMutation, refetch from dependencies to avoid infinite loop
-  }, [session, user, loadingSession, isHost, isParticipant, id]);
+  }, [session, user, loadingSession, isHost, isParticipant, id, role, roleQuery]);
 
   // redirect when session ends
   useEffect(() => {

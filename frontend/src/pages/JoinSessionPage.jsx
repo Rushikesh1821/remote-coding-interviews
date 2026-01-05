@@ -11,7 +11,7 @@ function JoinSessionPage() {
   const { sessionId } = useParams();
   const navigate = useNavigate();
   const { user, isSignedIn } = useUser();
-  const { role } = useUserRole();
+  const { role, roleQuery } = useUserRole();
   const [isJoining, setIsJoining] = useState(false);
 
   const { data: sessionData, isLoading: loadingSession, error: sessionError } = useSessionById(sessionId);
@@ -34,9 +34,12 @@ function JoinSessionPage() {
     }
   }, [role, navigate]);
 
-  // Auto-join session if valid
+  // Auto-join session if valid (only when role is participant)
   useEffect(() => {
+    // Wait for role to be loaded and ensure user is a participant
     if (!session || loadingSession || isJoining) return;
+    if ((roleQuery && roleQuery.isLoading) || role !== "participant") return;
+
     if (session.status === "ended") {
       toast.error("Session not found or expired");
       setTimeout(() => navigate("/participant/dashboard"), 2000);
@@ -74,7 +77,7 @@ function JoinSessionPage() {
         },
       });
     }
-  }, [session, loadingSession, sessionId, user, navigate, joinSessionMutation, isJoining]);
+  }, [session, loadingSession, sessionId, user, navigate, joinSessionMutation, isJoining, role, roleQuery]);
 
   if (loadingSession) {
     return (

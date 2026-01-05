@@ -5,4 +5,6 @@ const axiosInstance = axios.create({
   withCredentials: true, // by adding this field browser will send the cookies to server automatically, on every single req
 });
 
+console.debug("[axios] baseURL:", import.meta.env.VITE_API_URL);
+
 export default axiosInstance;

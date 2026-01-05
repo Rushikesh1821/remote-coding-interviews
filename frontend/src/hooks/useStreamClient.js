@@ -78,8 +78,16 @@ function useStreamClient(session, loadingSession, isHost, isParticipant) {
         await chatChannel.watch();
         setChannel(chatChannel);
       } catch (error) {
-        toast.error("Failed to join video call");
-        console.error("Error init call", error);
+        // Improved device and permission error handling
+        const errName = error?.name || "";
+        if (errName === "NotAllowedError" || errName === "PermissionDeniedError") {
+          toast.error("Camera/microphone permission denied. Please allow access and reload.");
+        } else if (errName === "NotFoundError" || errName === "DevicesNotFoundError") {
+          toast.error("No camera or microphone found. Please connect a device.");
+        } else {
+          toast.error("Failed to join video call: " + (error?.message || ""));
+        }
+        console.error("Error init call", error, JSON.stringify(error, Object.getOwnPropertyNames(error)));
       } finally {
         setIsInitializingCall(false);
       }
