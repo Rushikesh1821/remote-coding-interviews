@@ -1,0 +1,22 @@
+{
+  "name": "talent-iq",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "npm install --prefix backend && npm install --prefix frontend && npm run build --prefix frontend",
+    "start": "npm run start --prefix backend"
+  },
+  "engines": {
+    "node": "18.x"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@clerk/clerk-react": "^5.59.2",
+    "@stream-io/video-react-sdk": "^1.29.2",
+    "lucide-react": "^0.562.0",
+    "stream-chat-react": "^11.23.10"
+  }
+}
